@@ -19,6 +19,9 @@ Dependencies: \
  
 
 **Wolfram Mathematica** \
- | PolyLogTools
+ | PolyLogTools \
+ |-- HPL
 
-N.B.: The project is currently unfinished and on hold due to my studies at Cambridge. It has been developed between October 2023 and October 2024 during my time as a student research assistant in Prof. Lorenzo Tancredi's group at TUM.
+ Note: dependencies are listed where they occur for the first time. In particular, working right to left and top to bottom sequentially should work.
+
+**N.B.**: The project is currently unfinished and on hold due to my studies at Cambridge. Some functionality is missing and refactoring is necessary. It has been developed between October 2023 and October 2024 during my time as a student research assistant in Prof. Lorenzo Tancredi's group at TUM.
