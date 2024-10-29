@@ -1,0 +1,4 @@
+export LD_LIBRARY_PATH=/home/max/fplll/fplll-master/fplll/.libs/libfplll.so.8
+g++ -c -O3 symbol_precompute.cpp -o precomputations.o // (only once)
+g++ -fopenmp -O3 symbol.cpp cln_gmp_mpfr.cpp helper_functions.cpp precomputations.o -lmpfr -lgmp -lfplll -lcln -lginac -o out
+
