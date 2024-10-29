@@ -1,0 +1,67 @@
+Wir hatten ehemals:
+monlist:
+{{0, 0, 1}, {0, 1, 0}, {1, 0, 0}, {0, 0, 2}, {0, 2, 0}, {2, 0, 0}, {0, 1, 1}, {1, 0, 1}, {1, 1, 0}, ..., {2, 1, 0}, {1, 1, 1}}.
+Ich denke, es wäre besser die monlist wie folgt zu speichern:
+{{{1, 2}}, {{1, 1}}, {{1, 0}}, {{2, 2}}, {{2, 1}}, {{2, 0}}, {{1, 1}, {1, 2}}, {{1, 0}, {1, 2}}, {{1, 0}, {1, 1}}, ..., {{2, 0}, {1, 1}}, {{1, 0}, {1, 1}, {1, 2}}}.
+Also im Format std::vector<std::vector<std::pair<int, int>>>. Die Einträge der pairs haben folgende Bedeutung: 
+pair.first  : der exponent
+pair.second : das letter bzw. die Position im Vektor rat_alph.
+Hierzu gehen wir wie folgt vor:
+- Berechne alle Partitionen aller n >= m >= 1 von natürlichen Zahlen m kleiner gleich einer natürlichen Zahl n, z.B. n = 3 --> parts = {{1}, {2}, {1, 1}, {3}, {1, 2}, {1, 1, 1}}. Das ist möglich via generate_partitions
+- Dann, iteriere durch parts und füge die unique permutations der Subvektoren hinzu (in dem Fall nur {2, 1}) --> std::vector<std::vector<int>> parts2 = {{1}, {2}, {1, 1}, {3}, {1, 2}, {2, 1}, {1, 1, 1}}.
+- Sei a die Länge des rat_alph Vektors (in obigem Beispiel, a = 3) und lst = {0, 1, 2, ..., a-1}. Generiere eine Liste aller Tupel von disjunkten Elementen der Länge <= n, die man aus lst bilden kann. Also für obiges Beispiel:
+n = 1: {{0}, {1}, {2}}
+n = 2: {{0, 1}, {0, 2}, {1, 2}}
+n = 3: {{0, 1, 2}}
+Dies soll gespeichert werden in einem std::vector<std::vector<std::vector<int>>> tuples
+Nun kombiniere beide Ergebnisse zu dem obigen:
+Initialisiere std::vector<std::vector<std::pair<int, int>>> result.
+Iteriere durch parts2 mit idx i
+	Betrachte die Länge l des Subvektors subvec von parts2
+		Iteriere durch tuples[l-1] mit idx j
+			Initialisiere std::vector<std::pair<int, int>> temp
+			Iteriere durch parts2[i] und tuples[l-1][j] mit idx k
+				//Per Konstruktion gilt parts2[i].size() == tuples[l-1][j].size()
+				Bilde die Paare std::pair<int, int> {parts2[i][k], tuples[l-1][j][k]}
+				Pushe sie back zu temp
+			Pushe temp back zu result
+Gebe result zurück.
+
+ConstructNewAlgAlph_eff
+input: rat_alph, roots, cutoff_denom, cutoff_num
+Do the same preparational steps as before. But then:
+Iteriere über alle roots
+    Iteriere über alle integer partitions in parts2_denom mit idx i // auch ein leerer Vektor sollte hier vorkommen
+	Betrachte die Länge l des Subvektors subvec von parts2_denom
+	Falls die Länge 0 ist:
+	    setze monlist_denom_eval = 1
+	Iteriere durch alle Tupel von lst mit Länge l
+	    Initialisiere std::vector<std::pair<int, int>> monlist_denom_current
+	    Iteriere durch parts2_denom[i] und den gegenwärtigen Tupel tupel_den mit idx k
+		//Per Konstruktion gilt parts2_denom[i].size() == tupel_den.size()
+		Bilde die Paare std::pair<int, int> {parts2_denom[i][k], tupel_den[k]}
+		Pushe sie back zu monlist_denom_current
+	    // monlist_denom_current hat dann die Form {{2, 2}} oder {{1, 1}, {1, 2}} von oben
+	    Berechne monlist_denom_eval
+	    Führe die Prüfung durch wie im ursprünglichen code
+	    Falls die Prüfung erfolgreich ist:
+		Iteriere über alle integer partitions in parts2_num mit idx r
+		    Betrachte die Länge l des Subvektors subvec von parts2_num
+			Iteriere durch alle Tupel von lst\tupel_den mit Länge l
+			    Initialisiere std::vector<std::pair<int, int>> monlist_num_current
+				Iteriere durch parts2_num[r] und den gegenwärtigen Tupel tupel_num mit idx s
+				    Bilde die Paare std::pair<int, int> {parts2_num[r][s], tupel_num[r]}
+				    Pushe sie back zu monlist_num_current
+				Berechne monlist_num_eval
+				Führe die Prüfung durch wie im ursprünglichen code
+				Falls die Prüfung erfolgreich ist:
+				    Pushe {monlist_num_current, monlist_denom_current} zu dem std::vector<std::pair<std::vector<std::pair<int, int>>, std::vector<std::pair<int, int>>>> result
+
+		
+		
+		
+		
+		
+		
+		
+		

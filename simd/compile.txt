@@ -1,0 +1,2 @@
+g++ -O3 -fopenmp testRat.cpp -o testrat --std=c++20 -lcln -lginac -lgmp -march=native -mavx2
+
